@@ -20,9 +20,8 @@ void ComputerClub::Seat::set_client(const std::string& client, int hours, int mi
 void ComputerClub::Seat::remove_client(int hours, int minutes, int price) {
     client = "EMPTY";
     total_minutes = total_minutes + hours*60+minutes - (start_using.first*60+start_using.second);
-    if ((hours*60+minutes - (start_using.first*60+start_using.second) % 60) != 0)  
-        earnings += ((hours*60+minutes - (start_using.first*60+start_using.second))/60+1)*price;
-    else earnings += ((hours*60+minutes - (start_using.first*60+start_using.second))/60)*price;
+    earnings += ((hours*60+minutes - (start_using.first*60+start_using.second))/60)*price;
+    if (((hours*60+minutes - (start_using.first*60+start_using.second)) % 60) != 0)  earnings += price;
 }
 
 
@@ -148,30 +147,36 @@ std::string ComputerClub::read_event(const std::string& event) {
             if (event.at(i) != ' ') throw CCExceptionIncorrectInput(event);
             continue;
         }
-        if ((event.at(i) < '0') || (event.at(i) > '9')) throw CCExceptionIncorrectInput(event);
+        if (!std::isdigit(event.at(i))) throw CCExceptionIncorrectInput(event);
     }
 
     int hours, minutes, id, seat = 0;
     std::string tmp, client;
     std::stringstream s;
     s << event;
+    int i = 0;
     
     std::getline(s, tmp, ':');
+    for (int i = 0; i < tmp.size(); i++){ if (!std::isdigit(tmp.at(i))) throw CCExceptionIncorrectInput(event); }
     hours = std::stoi(tmp);
     if ((hours < 0)|| (hours > 23)) throw CCExceptionIncorrectInput(event);
 
     std::getline(s, tmp, ' ');
+    for (int i = 0; i < tmp.size(); i++){ if (!std::isdigit(tmp.at(i))) throw CCExceptionIncorrectInput(event); }
     minutes = std::stoi(tmp);
     if ((minutes > 59) || (minutes < 0)) throw CCExceptionIncorrectInput(event);
     if (hours < prev_event_time.first) throw CCExceptionIncorrectInput(event);
     else if ((hours == prev_event_time.first) && (minutes < prev_event_time.second)) throw CCExceptionIncorrectInput(event);
+
+
     
     std::getline(s, tmp, ' ');
+    for (int i = 0; i < tmp.size(); i++){ if (!std::isdigit(tmp.at(i))) throw CCExceptionIncorrectInput(event); }
     id = std::stoi(tmp);
 
     std::getline(s, client, ' ');
     for (int i = 0; i < client.size(); i++){
-        if (((client.at(i) < 'a') || (client.at(i) > 'z')) && ((client.at(i) < '0') || (client.at(i) > '9'))
+        if (!std::islower(client.at(i)) && !std::isdigit(client.at(i)) 
             && ((client.at(i) != '_') && (client.at(i) != '-'))) throw CCExceptionIncorrectInput(event);
     }
     if (s.tellg() != -1) {

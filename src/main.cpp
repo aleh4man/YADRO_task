@@ -26,22 +26,14 @@ int main(int argc, char* argv[]){
     ComputerClub* club;
 
     try{
-        int i =0;
         std::getline(in, tmp[0]);
         if ((tmp[0].at(0) == '0') && (tmp[0].size() > 1)) throw CCExceptionIncorrectInput(tmp[0]);
-        while (i < tmp[0].size()){
-            if (!std::isdigit(tmp[0].at(i))) throw CCExceptionIncorrectInput(tmp[0]);
-            i++;
-        }
+        for (int i = 0; i < tmp[0].size(); i++){ if (!std::isdigit(tmp[0].at(i))) throw CCExceptionIncorrectInput(tmp[0]); }
     
         std::getline(in, tmp[1]);
         std::getline(in, tmp[2]);
         if ((tmp[2].at(0) == '0') && (tmp[2].size() > 1)) throw CCExceptionIncorrectInput(tmp[2]);
-        i = 0;
-        while (i < tmp[2].size()){
-            if (!std::isdigit(tmp[2].at(i))) throw CCExceptionIncorrectInput(tmp[2]);
-            i++;
-        }
+        for (int i = 0; i < tmp[2].size(); i++){ if (!std::isdigit(tmp[2].at(i))) throw CCExceptionIncorrectInput(tmp[2]); }
 
         club = new ComputerClub(std::stoi(tmp[0]), tmp[1], std::stoi(tmp[2]));
     }
@@ -79,7 +71,7 @@ int main(int argc, char* argv[]){
         return -1;
     }
     t = clock() - t;
-    std::cout << "Program completed for " << ((double)t/CLOCKS_PER_SEC*1000000) << " mcs\n";
+    std::cout << "Program completed for " << ((double)t/CLOCKS_PER_SEC*1000) << " ms\n";
 
     return 0;
 }
