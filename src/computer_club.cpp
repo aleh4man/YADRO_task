@@ -137,6 +137,9 @@ std::string ComputerClub::get_closing_time() {
 }
 
 std::string ComputerClub::read_event(const std::string& event) {
+    if (prev_event_time.first == 24) return ""; //?
+    
+    //first checking of coorrect input (size of string and checking time)
     if (event.size() < 9) throw CCExceptionIncorrectInput(event);
     for (int i = 0; i < 5; i++){
         if (i == 2) {
@@ -156,49 +159,51 @@ std::string ComputerClub::read_event(const std::string& event) {
     s << event;
     int i = 0;
     
+    //reading time
     std::getline(s, tmp, ':');
-    for (int i = 0; i < tmp.size(); i++){ if (!std::isdigit(tmp.at(i))) throw CCExceptionIncorrectInput(event); }
     hours = std::stoi(tmp);
     if ((hours < 0)|| (hours > 23)) throw CCExceptionIncorrectInput(event);
 
     std::getline(s, tmp, ' ');
-    for (int i = 0; i < tmp.size(); i++){ if (!std::isdigit(tmp.at(i))) throw CCExceptionIncorrectInput(event); }
     minutes = std::stoi(tmp);
     if ((minutes > 59) || (minutes < 0)) throw CCExceptionIncorrectInput(event);
     if (hours < prev_event_time.first) throw CCExceptionIncorrectInput(event);
     else if ((hours == prev_event_time.first) && (minutes < prev_event_time.second)) throw CCExceptionIncorrectInput(event);
 
-
-    
+    //reading 'id' and checking it for being number
     std::getline(s, tmp, ' ');
     for (int i = 0; i < tmp.size(); i++){ if (!std::isdigit(tmp.at(i))) throw CCExceptionIncorrectInput(event); }
     id = std::stoi(tmp);
 
+    //reading 'client' and checking it for allowed symbols
     std::getline(s, client, ' ');
     for (int i = 0; i < client.size(); i++){
         if (!std::islower(client.at(i)) && !std::isdigit(client.at(i)) 
             && ((client.at(i) != '_') && (client.at(i) != '-'))) throw CCExceptionIncorrectInput(event);
     }
+
+    //reading table number if available and checking it for correct number
     if (s.tellg() != -1) {
         std::getline(s, tmp, ' ');
+        for (int i = 0; i < tmp.size(); i++){ if (!std::isdigit(tmp.at(i))) throw CCExceptionIncorrectInput(event); }
         seat = std::stoi(tmp);
     }
-
     if ((seat < 0) || (seat > seats.size())) throw CCExceptionIncorrectInput(event);
 
-
+    //event processing by ID
     switch(id){
+
         case (int)Events::Come:
             if ((hours < opening_time.first) || ((hours = opening_time.first)&& (minutes < opening_time.second)))
                 return make_msg(hours, minutes, EventsOut::Error, std::string("NotOpenYet"));
             
             if (client_in_queue(client) || (client_on_seat(client) != -1)) return make_msg(hours, minutes, EventsOut::Error, std::string("YouShallNotPass"));
-
+            
             queue.push_back(client);
             return "";
         
 
-        case (int)Events::TakeSeat:
+        case (int)Events::TakeSeat: 
             if (!client_in_queue(client) && (client_on_seat(client) == -1)) return make_msg(hours, minutes, EventsOut::Error, std::string("ClientUnknown"));
             return set_client(client, seat-1, hours, minutes);
         

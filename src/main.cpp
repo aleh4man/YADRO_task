@@ -12,7 +12,7 @@ int main(int argc, char* argv[]){
         return -1;
     }
     
-    clock_t t = clock();
+    
     std::ifstream in;
     in.open(argv[1]);
     if (!in.is_open()) {
@@ -24,7 +24,7 @@ int main(int argc, char* argv[]){
 
     std::ofstream output;
     ComputerClub* club;
-
+    clock_t t = clock();
     try{
         std::getline(in, tmp[0]);
         if ((tmp[0].at(0) == '0') && (tmp[0].size() > 1)) throw CCExceptionIncorrectInput(tmp[0]);

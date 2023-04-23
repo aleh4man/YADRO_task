@@ -8,13 +8,8 @@ class CCExceptionIncorrectInput : std::exception{
     private:
         std::string incorrect_string;
     public:
-    CCExceptionIncorrectInput(const std::string& str){
-        incorrect_string = str;
-    }
-
-    const char* what() const noexcept{
-        return incorrect_string.c_str();
-    }
+    CCExceptionIncorrectInput(const std::string&);
+    const char* what() const noexcept;
 };
 
 #endif
