@@ -1,7 +1,6 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <ctime>
 #include "computer_club.h"
 #include "cc_exceptions.h"
 
@@ -24,7 +23,6 @@ int main(int argc, char* argv[]){
 
     std::ofstream output;
     ComputerClub* club;
-    clock_t t = clock();
     try{
         std::getline(in, tmp[0]);
         if ((tmp[0].at(0) == '0') && (tmp[0].size() > 1)) throw CCExceptionIncorrectInput(tmp[0]);
@@ -70,8 +68,6 @@ int main(int argc, char* argv[]){
         output.close();
         return -1;
     }
-    t = clock() - t;
-    std::cout << "Program completed for " << ((double)t/CLOCKS_PER_SEC*1000) << " ms\n";
 
     return 0;
 }
