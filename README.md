@@ -3,7 +3,7 @@
 1. Клонировать репозиторий 
 
 ```
-https://github.com/aleh4man/YADRO_task.git
+git clone https://github.com/aleh4man/YADRO_task.git
 ```
 
 2. Перейти в папку YADRO_task
