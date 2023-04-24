@@ -20,8 +20,7 @@ int main(int argc, char* argv[]){
     }
 
     std::string tmp[3];
-
-    std::ofstream output;
+    std::stringstream s;
     ComputerClub* club;
     try{
         std::getline(in, tmp[0]);
@@ -41,33 +40,29 @@ int main(int argc, char* argv[]){
     }
 
     try{
-        output.open("output.txt");
-        output << club->get_opening_time() << '\n';
+        s << club->get_opening_time() << '\n';
         while(std::getline(in, tmp[0])) {
-            output << tmp[0] << '\n';
+            s << tmp[0] << '\n';
             tmp[1] = club->read_event(tmp[0]);
-            if(!tmp[1].empty()) output << tmp[1] << '\n';
+            if(!tmp[1].empty()) {
+                s << tmp[1] << '\n';
+            }
         }
         tmp[1] = club->close();
-        if(!tmp[1].empty()) output << tmp[1];
-        output << club->get_closing_time() << '\n';
-        output << club->get_seats_stats();
-        output.close();
+        if(!tmp[1].empty()) {
+            s << tmp[1];
+        }
+        s << club->get_closing_time() << '\n';
+        s << club->get_seats_stats();
+        std::cout << s.str() << '\n';
     }
     catch(CCExceptionIncorrectInput& ex){
         std::cout << ex.what() << '\n';
-        output.close();
-        output.open("output.txt", std::ofstream::trunc);
-        output.close();
         return -1;
     }
     catch(...){
         std::cout << "Unknown error" <<"\n";
-        output.close();
-        output.open("output.txt", std::ofstream::trunc);
-        output.close();
         return -1;
     }
-
     return 0;
 }
